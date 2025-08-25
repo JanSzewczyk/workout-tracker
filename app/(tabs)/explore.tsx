@@ -1,5 +1,5 @@
 import { Image } from "expo-image";
-import { Platform, StyleSheet } from "react-native";
+import { Platform, StyleSheet,Text } from "react-native";
 
 import { Collapsible } from "@/components/Collapsible";
 import { ExternalLink } from "@/components/ExternalLink";
@@ -26,6 +26,7 @@ export default function TabTwoScreen() {
       </ThemedView>
       <ThemedText>This app includes example code to help you get started.</ThemedText>
       <Collapsible title="File-based routing">
+        <Text className="text-xl text-red-500">XXXXX</Text>
         <ThemedText>
           This app has two screens: <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{" "}
           <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
