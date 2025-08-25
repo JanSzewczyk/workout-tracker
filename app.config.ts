@@ -1,6 +1,8 @@
-{
-  "expo": {
-    "name": "workout-tracker",
+import {ExpoConfig} from "@expo/config-types";
+import {ConfigContext} from "@expo/config";
+
+export default ({ config }: ConfigContext): ExpoConfig => ({
+    ...config,    "name": "Workout Tracker",
     "slug": "workout-tracker",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -38,5 +40,4 @@
     "experiments": {
       "typedRoutes": true
     }
-  }
-}
+  })
