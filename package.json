@@ -9,7 +9,6 @@
     "lint": "expo lint",
     "prettier:check": "prettier --check .",
     "prettier:write": "prettier --write .",
-    "reset-project": "node ./scripts/reset-project.js",
     "start": "expo start",
     "web": "expo start --web"
   },
