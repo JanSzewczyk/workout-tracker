@@ -1,28 +1,36 @@
 import { useSignIn } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
-import { KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { KeyboardAvoidingView, Platform, Text, TouchableOpacity, View } from "react-native";
 import * as React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import GoogleSignIn from "@/components/google-sign-in";
-import { AppBrandedLogo } from "@/components/app-branded-logo";
+import GoogleSignIn from "~/components/google-sign-in";
+import { AppBrandedLogo } from "~/components/app-branded-logo";
+import { TextField } from "~/components/ui/text-field";
+import { Controller, useForm } from "react-hook-form";
+import { LoginFormData, loginSchema } from "~/schemas/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-export default function Page() {
+export default function SignInScreen() {
   const { signIn, setActive, isLoaded } = useSignIn();
-  const router = useRouter();
 
-  const [emailAddress, setEmailAddress] = React.useState("");
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [password, setPassword] = React.useState("");
+  const {
+    control,
+    handleSubmit,
+    formState: { isLoading, isSubmitting }
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    reValidateMode: "onChange"
+  });
 
   // Handle the submission of the sign-in form
-  const onSignInPress = async () => {
+  async function handleSignInPress({ email, password }: LoginFormData) {
     if (!isLoaded) return;
 
     // Start the sign-in process using the email and password provided
     try {
       const signInAttempt = await signIn.create({
-        identifier: emailAddress,
+        identifier: email,
         password
       });
 
@@ -30,7 +38,6 @@ export default function Page() {
       // and redirect the user
       if (signInAttempt.status === "complete") {
         await setActive({ session: signInAttempt.createdSessionId });
-        router.replace("/");
       } else {
         // If the status isn't complete, check why. User might need to
         // complete further steps.
@@ -41,7 +48,7 @@ export default function Page() {
       // for more info on error handling
       console.error(JSON.stringify(err, null, 2));
     }
-  };
+  }
 
   return (
     <SafeAreaView className="flex-1">
@@ -55,55 +62,60 @@ export default function Page() {
           <View className="mb-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
             <Text className="mb-6 text-center text-2xl font-bold text-gray-900">Welcome Back</Text>
 
-            {/*  Email Input  */}
-            <View className="mb-4">
-              <Text className="mb-2 text-sm font-medium text-gray-700">Email</Text>
-              <View className="flex-row items-center rounded-xl border border-gray-200 bg-gray-50 px-4 py-2">
-                <Ionicons name="mail-outline" size={20} color="#6b7280" />
-                <TextInput
-                  autoCapitalize="none"
-                  value={emailAddress}
-                  placeholder="Enter your email"
-                  placeholderClassName="text-gray-400"
-                  onChangeText={setEmailAddress}
-                  className="ml-3 flex-1 text-gray-900"
-                  editable={!isLoading}
-                />
-              </View>
-            </View>
+            <View className="space-y-4">
+              <Controller
+                control={control}
+                name="email"
+                render={({ field: { onChange, ...rest }, fieldState: { error } }) => (
+                  <TextField
+                    icon="mail-outline"
+                    label="Email"
+                    autoCapitalize="none"
+                    placeholder="Enter your email"
+                    error={error?.message}
+                    editable={!isLoading}
+                    autoComplete="email"
+                    onChangeText={onChange}
+                    {...rest}
+                  />
+                )}
+              />
 
-            {/*  Password Input  */}
-            <View className="mb-4">
-              <Text className="mb-2 text-sm font-medium text-gray-700">Password</Text>
-              <View className="flex-row items-center rounded-xl border border-gray-200 bg-gray-50 px-4 py-2">
-                <Ionicons name="lock-closed-outline" size={20} color="#6b7280" />
-                <TextInput
-                  value={password}
-                  placeholder="Enter your password"
-                  placeholderClassName="text-gray-400"
-                  secureTextEntry
-                  onChangeText={setPassword}
-                  className="ml-3 flex-1 text-gray-900"
-                  editable={!isLoading}
-                />
-              </View>
+              <Controller
+                control={control}
+                name="password"
+                render={({ field: { onChange, ...rest }, fieldState: { error } }) => (
+                  <TextField
+                    icon="lock-closed-outline"
+                    label="Password"
+                    placeholder="Enter your password"
+                    error={error?.message}
+                    editable={!isLoading}
+                    secureTextEntry
+                    onChangeText={onChange}
+                    {...rest}
+                  />
+                )}
+              />
             </View>
           </View>
 
           {/*  Sign In button  */}
           <TouchableOpacity
-            onPress={onSignInPress}
-            disabled={isLoading}
-            className={`rounded-xl py-4 shadow-sm ${isLoading ? "bg-gray-400" : "bg-blue-600"}`}
+            onPress={handleSubmit(handleSignInPress)}
+            disabled={isSubmitting}
+            className={`rounded-xl py-4 shadow-sm ${isSubmitting ? "bg-gray-400" : "bg-blue-600"}`}
             activeOpacity={0.8}
           >
             <View className="flex-row items-center justify-center">
-              {isLoading ? (
+              {isSubmitting ? (
                 <Ionicons name="refresh" size={20} color="white" />
               ) : (
                 <Ionicons name="log-in-outline" size={20} color="white" />
               )}
-              <Text className="ml-2 text-lg font-semibold text-white">{isLoading ? "Signing In..." : "Sign In"}</Text>
+              <Text className="ml-2 text-lg font-semibold text-white">
+                {isSubmitting ? "Signing In..." : "Sign In"}
+              </Text>
             </View>
           </TouchableOpacity>
 
