@@ -5,6 +5,7 @@ import * as React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import GoogleSignIn from "@/components/google-sign-in";
+import { AppBrandedLogo } from "@/components/app-branded-logo";
 
 export default function Page() {
   const { signIn, setActive, isLoaded } = useSignIn();
@@ -48,15 +49,7 @@ export default function Page() {
         {/*  Header section  */}
         <View className="flex-1 justify-center px-6">
           {/*  Logo/Branding  */}
-          <View className="mb-8 items-center">
-            <View className="mb-4 size-20 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-purple-600 shadow-lg">
-              <Ionicons name="fitness" size={40} color="white" />
-            </View>
-            <Text className="mb-2 text-3xl font-bold text-gray-900">Fit Tracker</Text>
-            <Text className="text-center text-lg text-gray-600">
-              Frack your fitness journey{"\n"}and reach your goals
-            </Text>
-          </View>
+          <AppBrandedLogo />
 
           {/*  Sign in form  */}
           <View className="mb-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
