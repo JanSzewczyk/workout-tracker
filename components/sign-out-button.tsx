@@ -1,11 +1,27 @@
 import { useClerk } from "@clerk/clerk-expo";
 import * as Linking from "expo-linking";
-import { Text, TouchableOpacity } from "react-native";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import * as React from "react";
 
 export const SignOutButton = () => {
   const { signOut } = useClerk();
 
-  async function handleSignOut() {
+  function handleSignOut() {
+    Alert.alert("Sign Out", "Are you sure you want to sign out?", [
+      {
+        text: "Cancel",
+        style: "cancel"
+      },
+      {
+        text: "Sign Out",
+        style: "destructive",
+        onPress: () => signOut()
+      }
+    ]);
+  }
+
+  async function handleSignOutaa() {
     try {
       await signOut();
       await Linking.openURL(Linking.createURL("/"));
@@ -16,8 +32,11 @@ export const SignOutButton = () => {
     }
   }
   return (
-    <TouchableOpacity onPress={handleSignOut}>
-      <Text>Sign out</Text>
+    <TouchableOpacity className="rounded-2xl bg-red-600 p-4 shadow-sm" activeOpacity={0.8} onPress={handleSignOut}>
+      <View className="flex-row items-center justify-center">
+        <Ionicons name="log-out-outline" size={20} color="white" />
+        <Text className="ml-2 text-lg font-semibold text-white">Sign Out</Text>
+      </View>
     </TouchableOpacity>
   );
 };
