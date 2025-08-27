@@ -64,7 +64,7 @@ export default function SignInScreen() {
           <View className="mb-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
             <Text className="mb-6 text-center text-2xl font-bold text-gray-900">Welcome Back</Text>
 
-            <View className="space-y-4">
+            <View className="gap-y-4">
               <Controller
                 control={control}
                 name="email"
@@ -135,7 +135,7 @@ export default function SignInScreen() {
           {/*  Sign Up Link */}
           <View className="mt-4 flex-row items-center justify-center">
             <Text className="text-gray-600">Don&#39;t have an account? </Text>
-            <Link href="/(app)/(auth)/sign-up" asChild>
+            <Link href="/sign-up" asChild>
               <TouchableOpacity>
                 <Text className="font-semibold text-blue-600">Sign Up</Text>
               </TouchableOpacity>

@@ -14,7 +14,7 @@ export type TextFieldProps = TextInputProps & {
 
 export function TextField({ label, icon, error, description, ...props }: TextFieldProps) {
   return (
-    <View className="mb-4">
+    <View>
       {label ? <Text className="mb-2 text-sm font-medium text-gray-700">{label}</Text> : null}
       <View
         className={clsx(
