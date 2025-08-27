@@ -3,7 +3,7 @@ import { KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, View
 import { useSignUp } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { AppBrandedLogo } from "@/components/app-branded-logo";
+import { AppBrandedLogo } from "~/components/app-branded-logo";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function SignUpScreen() {
