@@ -1,5 +1,5 @@
 import { useSignIn } from "@clerk/clerk-expo";
-import { Link, useRouter } from "expo-router";
+import { Link } from "expo-router";
 import { KeyboardAvoidingView, Platform, Text, TouchableOpacity, View } from "react-native";
 import * as React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,7 +17,7 @@ export default function SignInScreen() {
   const {
     control,
     handleSubmit,
-    formState: { isLoading, isSubmitting }
+    formState: { isSubmitting }
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     reValidateMode: "onChange"
@@ -25,7 +25,9 @@ export default function SignInScreen() {
 
   // Handle the submission of the sign-in form
   async function handleSignInPress({ email, password }: LoginFormData) {
-    if (!isLoaded) return;
+    if (!isLoaded) {
+      return;
+    }
 
     // Start the sign-in process using the email and password provided
     try {
@@ -73,7 +75,7 @@ export default function SignInScreen() {
                     autoCapitalize="none"
                     placeholder="Enter your email"
                     error={error?.message}
-                    editable={!isLoading}
+                    editable={!isSubmitting}
                     autoComplete="email"
                     onChangeText={onChange}
                     {...rest}
@@ -90,7 +92,7 @@ export default function SignInScreen() {
                     label="Password"
                     placeholder="Enter your password"
                     error={error?.message}
-                    editable={!isLoading}
+                    editable={!isSubmitting}
                     secureTextEntry
                     onChangeText={onChange}
                     {...rest}
@@ -133,7 +135,7 @@ export default function SignInScreen() {
           {/*  Sign Up Link */}
           <View className="mt-4 flex-row items-center justify-center">
             <Text className="text-gray-600">Don&#39;t have an account? </Text>
-            <Link href="/sign-up" asChild>
+            <Link href="/(app)/(auth)/sign-up" asChild>
               <TouchableOpacity>
                 <Text className="font-semibold text-blue-600">Sign Up</Text>
               </TouchableOpacity>
