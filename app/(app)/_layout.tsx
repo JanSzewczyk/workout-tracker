@@ -14,14 +14,14 @@ export default function AppLayout() {
   }
 
   return (
-    <Stack>
+    <Stack screenOptions={{ headerShown: false }}>
       <Stack.Protected guard={isSignedIn}>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" />
       </Stack.Protected>
       <Stack.Protected guard={!isSignedIn}>
-        <Stack.Screen name="(auth)/sign-in" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)/sign-up/index" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)/sign-up/otp" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)/sign-in" />
+        <Stack.Screen name="(auth)/sign-up/index" />
+        <Stack.Screen name="(auth)/sign-up/otp" />
       </Stack.Protected>
     </Stack>
   );
