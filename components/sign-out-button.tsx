@@ -7,7 +7,7 @@ import * as React from "react";
 export const SignOutButton = () => {
   const { signOut } = useClerk();
 
-  function handleSignOut() {
+  function handleSignOutAlert() {
     Alert.alert("Sign Out", "Are you sure you want to sign out?", [
       {
         text: "Cancel",
@@ -16,12 +16,12 @@ export const SignOutButton = () => {
       {
         text: "Sign Out",
         style: "destructive",
-        onPress: () => signOut()
+        onPress: () => handleSignOut()
       }
     ]);
   }
 
-  async function handleSignOutaa() {
+  async function handleSignOut() {
     try {
       await signOut();
       await Linking.openURL(Linking.createURL("/"));
@@ -31,8 +31,9 @@ export const SignOutButton = () => {
       console.error(JSON.stringify(err, null, 2));
     }
   }
+
   return (
-    <TouchableOpacity className="rounded-2xl bg-red-600 p-4 shadow-sm" activeOpacity={0.8} onPress={handleSignOut}>
+    <TouchableOpacity className="rounded-2xl bg-red-600 p-4 shadow-sm" activeOpacity={0.8} onPress={handleSignOutAlert}>
       <View className="flex-row items-center justify-center">
         <Ionicons name="log-out-outline" size={20} color="white" />
         <Text className="ml-2 text-lg font-semibold text-white">Sign Out</Text>

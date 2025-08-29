@@ -1,0 +1,81 @@
+import { View, Text, TouchableOpacity, Image } from "react-native";
+
+import { Exercise } from "~/lib/sanity/types";
+import { urlFor } from "~/lib/sanity/client";
+import { Ionicons } from "@expo/vector-icons";
+import { clsx } from "clsx";
+
+function getDifficultyColor(difficulty?: string) {
+  switch (difficulty) {
+    case "beginner":
+      return "bg-green-500";
+    case "intermediate":
+      return "bg-yellow-500";
+    case "advanced":
+      return "bg-red-500";
+    default:
+      return "bg-gray-500";
+  }
+}
+
+function getDifficultyLabel(difficulty?: string) {
+  switch (difficulty) {
+    case "beginner":
+      return "Beginner";
+    case "intermediate":
+      return "Intermediate";
+    case "advanced":
+      return "Advanced";
+    default:
+      return "Unknown";
+  }
+}
+
+type ExerciseCardProps = {
+  item: Exercise;
+  onPress: () => void;
+  showChevron?: boolean;
+};
+
+export function ExerciseCard({ item, onPress, showChevron }: ExerciseCardProps) {
+  return (
+    <TouchableOpacity onPress={onPress} className="mb-4 rounded-2xl border border-gray-100 bg-white shadow-sm">
+      <View className="flex-row p-6">
+        <View className="mr-4 size-20 overflow-hidden rounded-xl bg-white">
+          {item.image ? (
+            <Image
+              source={{ uri: urlFor(item?.image?.asset?._ref ?? "").url() }}
+              className="size-full"
+              resizeMode="contain"
+            />
+          ) : (
+            <View className="size-full items-center justify-center bg-gradient-to-br from-blue-400 to-purple-500">
+              <Ionicons name="fitness" size={24} color="white" />
+            </View>
+          )}
+        </View>
+
+        <View className="flex-1 justify-between">
+          <View>
+            <Text className="mb-1 text-lg font-bold text-gray-900">{item.name}</Text>
+            <Text className="mb-2 text-sm text-gray-600" numberOfLines={2}>
+              {item.description || "No description available"}
+            </Text>
+          </View>
+
+          <View className="flex-row items-center justify-between">
+            <View className={clsx("rounded-full px-3 py-1", getDifficultyColor(item.difficulty))}>
+              <Text className="text-sm font-semibold text-white">{getDifficultyLabel(item.difficulty)}</Text>
+            </View>
+
+            {showChevron ? (
+              <TouchableOpacity className="p-2">
+                <Ionicons name="chevron-forward" size={20} color="#6b7280" />
+              </TouchableOpacity>
+            ) : null}
+          </View>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+}

@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Text, TextInput, TextInputProps, View } from "react-native";
+import { Text, TextInput, TextInputProps, TouchableOpacity, View } from "react-native";
 import { clsx } from "clsx";
 import * as React from "react";
 
@@ -10,9 +10,19 @@ export type TextFieldProps = TextInputProps & {
   icon?: IconName;
   error?: string;
   description?: string;
+  showClearButton?: boolean;
+  onRemoveText?: () => void;
 };
 
-export function TextField({ label, icon, error, description, ...props }: TextFieldProps) {
+export function TextField({
+  label,
+  icon,
+  error,
+  description,
+  onRemoveText,
+  showClearButton,
+  ...props
+}: TextFieldProps) {
   return (
     <View>
       {label ? <Text className="mb-2 text-sm font-medium text-gray-700">{label}</Text> : null}
@@ -24,6 +34,11 @@ export function TextField({ label, icon, error, description, ...props }: TextFie
       >
         <Ionicons name={icon} size={20} color={error ? "#ef4444" : "#6b7280"} />
         <TextInput {...props} className="ml-3 flex-1 text-gray-900" placeholderClassName="text-gray-400" />
+        {showClearButton ? (
+          <TouchableOpacity onPress={onRemoveText}>
+            <Ionicons name="close-circle" size={20} color={error ? "#ef4444" : "#6b7280"} />
+          </TouchableOpacity>
+        ) : null}
       </View>
       {description ? <Text className="mt-1 text-sm text-gray-500">{description}</Text> : null}
       {error ? <Text className="mt-1 text-sm text-red-500">{error}</Text> : null}
