@@ -4,32 +4,7 @@ import { Exercise } from "~/lib/sanity/types";
 import { urlFor } from "~/lib/sanity/client";
 import { Ionicons } from "@expo/vector-icons";
 import { clsx } from "clsx";
-
-function getDifficultyColor(difficulty?: string) {
-  switch (difficulty) {
-    case "beginner":
-      return "bg-green-500";
-    case "intermediate":
-      return "bg-yellow-500";
-    case "advanced":
-      return "bg-red-500";
-    default:
-      return "bg-gray-500";
-  }
-}
-
-function getDifficultyLabel(difficulty?: string) {
-  switch (difficulty) {
-    case "beginner":
-      return "Beginner";
-    case "intermediate":
-      return "Intermediate";
-    case "advanced":
-      return "Advanced";
-    default:
-      return "Unknown";
-  }
-}
+import { getDifficultyColor, getDifficultyLabel } from "~/utils/exercise";
 
 type ExerciseCardProps = {
   item: Exercise;
@@ -59,7 +34,7 @@ export function ExerciseCard({ item, onPress, showChevron }: ExerciseCardProps) 
           <View>
             <Text className="mb-1 text-lg font-bold text-gray-900">{item.name}</Text>
             <Text className="mb-2 text-sm text-gray-600" numberOfLines={2}>
-              {item.description || "No description available"}
+              {item?.description ?? "No description available"}
             </Text>
           </View>
 

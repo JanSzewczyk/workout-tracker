@@ -20,7 +20,7 @@ export default function ExercisesTab() {
   const [exercises, setExercises] = React.useState<Exercise[]>([]);
   const [filteredExercises, setFilteredExercises] = React.useState<Exercise[]>([]);
 
-  const [refreshing, setRefreshing] = React.useState(false);
+  const [refreshing, startRefreshing] = React.useTransition();
 
   React.useEffect(() => {
     void fetchExercises();
@@ -28,7 +28,6 @@ export default function ExercisesTab() {
 
   React.useEffect(() => {
     const filtered = exercises.filter((exercise) => exercise.name?.toLowerCase().includes(searchParams.toLowerCase()));
-
     setFilteredExercises(filtered);
   }, [exercises, searchParams]);
 
@@ -44,16 +43,16 @@ export default function ExercisesTab() {
   }
 
   async function handleRefresh() {
-    setRefreshing(true);
-    await fetchExercises();
-    setRefreshing(false);
+    startRefreshing(async () => {
+      await fetchExercises();
+    });
   }
 
   return (
     // TODO Fix this SafeAreaView issue on Android with Expo Router
     // https://github.com/AppAndFlow/react-native-safe-area-context/issues/650
     <SafeAreaView edges={["left", "right", "top"]} className="flex-1 bg-gray-50">
-      <View className="flex-1 bg-gray-500">
+      <View className="flex-1">
         {/*  Header  */}
         <View className="border-b border-gray-200 bg-white px-6 py-4">
           <Text className="text-2xl font-bold text-gray-900">Exercise Library</Text>
@@ -75,8 +74,18 @@ export default function ExercisesTab() {
           data={filteredExercises}
           keyExtractor={(item) => item._id}
           showsVerticalScrollIndicator={false}
-          contentContainerClassName="p-6 bg-red-500"
-          renderItem={({ item }) => <ExerciseCard item={item} onPress={() => router.back()} />}
+          contentContainerClassName="p-6"
+          renderItem={({ item }) => (
+            <ExerciseCard
+              item={item}
+              onPress={() =>
+                router.push({
+                  pathname: "/exercises/[id]",
+                  params: { id: item._id }
+                })
+              }
+            />
+          )}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}

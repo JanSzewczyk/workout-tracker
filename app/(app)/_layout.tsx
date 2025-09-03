@@ -17,6 +17,14 @@ export default function AppLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Protected guard={isSignedIn}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen
+          name="exercises/[id]"
+          options={{
+            presentation: "modal",
+            gestureEnabled: true,
+            animationTypeForReplace: "push"
+          }}
+        />
       </Stack.Protected>
       <Stack.Protected guard={!isSignedIn}>
         <Stack.Screen name="(auth)/sign-in" />
