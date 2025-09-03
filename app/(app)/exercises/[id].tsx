@@ -8,6 +8,7 @@ import { client, urlFor } from "~/lib/sanity/client";
 import { Exercise } from "~/lib/sanity/types";
 import { clsx } from "clsx";
 import { getDifficultyColor, getDifficultyLabel } from "~/utils/exercise";
+import Markdown from "react-native-markdown-display";
 
 export const singleExerciseQuery = defineQuery(`*[_type == "exercise" && _id == $id][0]`);
 
@@ -18,7 +19,7 @@ export default function ExerciseDetailsView() {
   const [exercise, setExercise] = React.useState<Exercise | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [aiLoading, setAiLoading] = React.useState(false);
-  const [aiGuidance, setAiGuidance] = React.useState<string>();
+  const [aiGuidance, setAiGuidance] = React.useState<string>("");
 
   React.useEffect(() => {
     void fetchExercise();
@@ -42,7 +43,7 @@ export default function ExerciseDetailsView() {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ exerciseId: exercise?._id })
+        body: JSON.stringify({ exerciseName: exercise?.name })
       });
 
       if (!response.ok) {
@@ -154,8 +155,34 @@ export default function ExerciseDetailsView() {
             </View>
           ) : null}
 
-          {/*  TODO: AI Guidance  */}
+          {/*  AI Guidance  */}
+          {aiGuidance || aiLoading ? (
+            <View className="mb-6">
+              <View className="mb-3 flex-row items-center">
+                <Ionicons name="fitness" size={24} color="#3b82f6" />
+                <Text className="ml-2 text-xl font-semibold text-gray-800">AI Coach says...</Text>
+              </View>
 
+              {aiLoading ? (
+                <View className="items-center rounded-xl bg-gray-50 p-4">
+                  <ActivityIndicator size="small" color="#3b82f6" />
+                  <Text className="mt-2 text-gray-600">Generating personalized guidance...</Text>
+                </View>
+              ) : (
+                <View className="rounded-xl border-l-4 border-blue-500 bg-blue-50 p-4">
+                  <Markdown
+                    style={{
+                      body: { paddingBottom: 20 },
+                      heading2: { fontSize: 18, fontWeight: "bold", color: "#1f2937", marginTop: 12, marginBottom: 6 },
+                      heading3: { fontSize: 16, fontWeight: "600", color: "#374151", marginTop: 8, marginBottom: 4 }
+                    }}
+                  >
+                    {aiGuidance}
+                  </Markdown>
+                </View>
+              )}
+            </View>
+          ) : null}
           {/*  ---  */}
 
           {/*  Action Buttons  */}

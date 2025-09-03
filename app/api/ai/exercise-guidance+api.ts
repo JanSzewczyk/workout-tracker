@@ -5,7 +5,7 @@ const apenai = new OpenIA({
 });
 
 export async function POST(request: Request) {
-  const { exerciseId, exerciseName } = await request.json();
+  const { exerciseName } = await request.json();
 
   if (!exerciseName) {
     return Response.json({ message: "Exercise name is required" }, { status: 400 });
@@ -34,8 +34,6 @@ export async function POST(request: Request) {
   
   Always use heading and subheadings.
   `;
-
-  console.log(prompt);
 
   try {
     const response = await apenai.chat.completions.create({
