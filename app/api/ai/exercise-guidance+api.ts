@@ -43,5 +43,11 @@ export async function POST(request: Request) {
       messages: [{ role: "user", content: prompt }]
     });
     return Response.json({ message: response.choices[0].message.content });
-  } catch (error) {}
+  } catch (error) {
+    console.error("Error fetching AI guidance:", error);
+    return Response.json(
+      { message: "Sorry, we could not fetch AI guidance at this time. Please try again later." },
+      { status: 500 }
+    );
+  }
 }

@@ -18,7 +18,7 @@ export default function ExerciseDetailsView() {
   const [exercise, setExercise] = React.useState<Exercise | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [aiLoading, setAiLoading] = React.useState(false);
-  const [aiGuidance, setaiGuidance] = React.useState(null);
+  const [aiGuidance, setAiGuidance] = React.useState<string>();
 
   React.useEffect(() => {
     void fetchExercise();
@@ -34,8 +34,29 @@ export default function ExerciseDetailsView() {
     }
   }, [id]);
 
-  function getAiGuidance() {
-    console.log("Get AI Guidance");
+  async function getAiGuidance() {
+    setAiLoading(true);
+    try {
+      const response = await fetch("/api/ai/exercise-guidance", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ exerciseId: exercise?._id })
+      });
+
+      if (!response.ok) {
+        throw new Error("Error fetching AiGuidance");
+      }
+
+      const data = await response.json();
+      setAiGuidance(data.message);
+    } catch (error) {
+      console.error("Error fetching AiGuidance:", error);
+      setAiGuidance("Sorry, we could not fetch AI guidance at this time. Please try again later.");
+    } finally {
+      setAiLoading(false);
+    }
   }
 
   if (loading) {
