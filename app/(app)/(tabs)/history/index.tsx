@@ -1,73 +1,19 @@
 import { ActivityIndicator, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { client } from "~/lib/sanity/client";
-import { defineQuery } from "groq";
 import { useUser } from "@clerk/clerk-expo";
 import React from "react";
 import { GetWorkoutsQueryResult } from "~/lib/sanity/types";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { formatDuration } from "~/utils/duration";
 import { Ionicons } from "@expo/vector-icons";
-
-export const getWorkoutsQuery = defineQuery(`*[_type == "workout" && userId == $userId] | order(date desc) {
-  _id,
-  date,
-  duration,
-  exercises[] {
-    exercise-> {
-      _id,
-      name
-    },
-    sets[] {
-      reps,
-      weight,
-      weightUnit,
-      _type,
-      _key
-    },
-    _type,
-    _key
-  }
-}`);
+import { useWorkoutsQuery } from "~/lib/react-query/hooks/workout";
 
 export default function HistoryTab() {
   const { user } = useUser();
 
   const router = useRouter();
-  const { refresh } = useLocalSearchParams();
 
-  const [workouts, setWorkouts] = React.useState<GetWorkoutsQueryResult>([]);
-  const [isLoading, setIsLoading] = React.useState<boolean>(true);
-  const [isRefetching, setIsRefetching] = React.useState<boolean>(false);
-
-  async function fetchWorkouts() {
-    try {
-      const results = await client.fetch(getWorkoutsQuery, { userId: user?.id });
-      setWorkouts(results);
-    } catch (error) {
-      console.error("Error fetching exercises:", error);
-    } finally {
-      setIsLoading(false);
-      setIsRefetching(false);
-    }
-  }
-
-  React.useEffect(() => {
-    void fetchWorkouts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  React.useEffect(() => {
-    if (refresh === "true") {
-      void fetchWorkouts();
-      router.replace("/(app)/(tabs)/history");
-    }
-  }, [fetchWorkouts, refresh, router]);
-
-  async function handleRefresh() {
-    setIsRefetching(true);
-    await fetchWorkouts();
-  }
+  const { data: workouts = [], isLoading, isRefetching, refetch } = useWorkoutsQuery(user?.id);
 
   function formatDate(dateString: string) {
     const date = new Date(dateString);
@@ -134,7 +80,7 @@ export default function HistoryTab() {
         refreshControl={
           <RefreshControl
             refreshing={isRefetching}
-            onRefresh={handleRefresh}
+            onRefresh={refetch}
             colors={["#3b82f6"]}
             tintColor="#3b82f6"
             title="Pull to refresh workouts"
@@ -154,7 +100,7 @@ export default function HistoryTab() {
               <TouchableOpacity
                 key={workout._id}
                 activeOpacity={0.7}
-                // onPress={() => router.push({ pathname: "/history/workout-record", params: { workoutId: workout._id } })}
+                onPress={() => router.push({ pathname: "/history/[workoutId]", params: { workoutId: workout._id } })}
                 className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"
               >
                 <View className="mb-4 flex-row items-center justify-between">
