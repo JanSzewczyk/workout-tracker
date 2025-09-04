@@ -1,0 +1,62 @@
+import { defineQuery } from "groq";
+import { GetWorkoutByIdQueryResult, GetWorkoutsQueryResult } from "~/lib/sanity/types";
+import { client } from "~/lib/sanity/client";
+import { useQuery } from "@tanstack/react-query";
+
+export const getWorkoutsQuery = defineQuery(`*[_type == "workout" && userId == $userId] | order(date desc) {
+  _id,
+  date,
+  duration,
+  exercises[] {
+    exercise-> {
+      _id,
+      name
+    },
+    sets[] {
+      reps,
+      weight,
+      weightUnit,
+      _type,
+      _key
+    },
+    _type,
+    _key
+  }
+}`);
+
+export function useWorkoutsQuery(userId?: string) {
+  return useQuery<GetWorkoutsQueryResult>({
+    queryKey: ["workouts", userId],
+    queryFn: async () => await client.fetch(getWorkoutsQuery, { userId }),
+    enabled: !!userId
+  });
+}
+
+export const getWorkoutByIdQuery = defineQuery(`*[_type == "workout" && _id == $workoutId][0] {
+  _id,
+  date,
+  duration,
+  exercises[] {
+    exercise-> {
+      _id,
+      name
+    },
+    sets[] {
+      reps,
+      weight,
+      weightUnit,
+      _type,
+      _key
+    },
+    _type,
+    _key
+  }
+}`);
+
+export function useWorkoutByIdQuery(workoutId?: string) {
+  return useQuery<GetWorkoutByIdQueryResult>({
+    queryKey: ["workout", workoutId],
+    queryFn: async () => await client.fetch(getWorkoutByIdQuery, { workoutId }),
+    enabled: !!workoutId
+  });
+}
