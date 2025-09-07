@@ -12,7 +12,7 @@ export const client = createClient(config);
 
 const adminConfig = {
   ...config,
-  token: process.env.EXPO_PULIC_SANITY_TOKEN
+  token: process.env.EXPO_PUBLIC_SANITY_TOKEN
 } satisfies ClientConfig;
 
 export const adminClient = createClient(adminConfig);
