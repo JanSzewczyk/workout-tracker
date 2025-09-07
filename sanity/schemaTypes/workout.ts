@@ -110,12 +110,6 @@ export default defineType({
       date: "date",
       duration: "duration",
       exercises: "exercises"
-    },
-    prepare({ title, subtitle }) {
-      return {
-        title: `Workout: ${title}`,
-        subtitle: new Date(subtitle).toLocaleDateString()
-      };
     }
   }
 });
