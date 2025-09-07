@@ -1,7 +1,7 @@
 import { defineQuery } from "groq";
 import { GetWorkoutByIdQueryResult, GetWorkoutsQueryResult } from "~/lib/sanity/types";
-import { client } from "~/lib/sanity/client";
-import { useQuery } from "@tanstack/react-query";
+import { adminClient, client } from "~/lib/sanity/client";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const getWorkoutsQuery = defineQuery(`*[_type == "workout" && userId == $userId] | order(date desc) {
   _id,
@@ -58,5 +58,11 @@ export function useWorkoutByIdQuery(workoutId?: string) {
     queryKey: ["workout", workoutId],
     queryFn: async () => await client.fetch(getWorkoutByIdQuery, { workoutId }),
     enabled: !!workoutId
+  });
+}
+
+export function useWorkoutDelete() {
+  return useMutation({
+    mutationFn: async (workoutId: string) => await adminClient.delete(workoutId)
   });
 }
