@@ -4,9 +4,9 @@ import { useUser } from "@clerk/clerk-expo";
 import React from "react";
 import { GetWorkoutsQueryResult } from "~/lib/sanity/types";
 import { useRouter } from "expo-router";
-import { formatDuration } from "~/utils/duration";
 import { Ionicons } from "@expo/vector-icons";
-import { useWorkoutsQuery } from "~/lib/react-query/hooks/workout";
+import { useWorkoutDelete, useWorkoutsQuery } from "~/lib/react-query/hooks/workout";
+import { formatWorkoutDuration } from "~/utils/wokrout";
 
 export default function HistoryTab() {
   const { user } = useUser();
@@ -28,13 +28,6 @@ export default function HistoryTab() {
     } else {
       return date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
     }
-  }
-
-  function formatWorkoutDuration(seconds?: number | null) {
-    if (!seconds) {
-      return "Duration not recorded";
-    }
-    return formatDuration(seconds);
   }
 
   function getTotalSets(workout: GetWorkoutsQueryResult[number]) {
