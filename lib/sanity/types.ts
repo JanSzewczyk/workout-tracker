@@ -258,6 +258,35 @@ export type SingleExerciseQueryResult = {
   isActive?: boolean;
 } | null;
 
+// Source: ../lib/react-query/hooks/exercise.tsx
+// Variable: getExercisesQuery
+// Query: *[_type == "exercise"] {  ...}
+export type GetExercisesQueryResult = Array<{
+  _id: string;
+  _type: "exercise";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  description?: string;
+  difficulty?: "advanced" | "beginner" | "intermediate";
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  videoUrl?: string;
+  isActive?: boolean;
+}>;
+
 // Source: ../lib/react-query/hooks/workout.tsx
 // Variable: getWorkoutsQuery
 // Query: *[_type == "workout" && userId == $userId] | order(date desc) {  _id,  date,  duration,  exercises[] {    exercise-> {      _id,      name    },    sets[] {      reps,      weight,      weightUnit,      _type,      _key    },    _type,    _key  }}
@@ -308,7 +337,7 @@ export type GetWorkoutByIdQueryResult = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '*[_type == "exercise"] {\n  ...\n}': ExerciseQueryResult;
+    '*[_type == "exercise"] {\n  ...\n}': ExerciseQueryResult | GetExercisesQueryResult;
     '*[_type == "exercise" && _id == $id][0]': SingleExerciseQueryResult;
     '*[_type == "workout" && userId == $userId] | order(date desc) {\n  _id,\n  date,\n  duration,\n  exercises[] {\n    exercise-> {\n      _id,\n      name\n    },\n    sets[] {\n      reps,\n      weight,\n      weightUnit,\n      _type,\n      _key\n    },\n    _type,\n    _key\n  }\n}': GetWorkoutsQueryResult;
     '*[_type == "workout" && _id == $workoutId][0] {\n  _id,\n  date,\n  duration,\n  exercises[] {\n    exercise-> {\n      _id,\n      name\n    },\n    sets[] {\n      reps,\n      weight,\n      weightUnit,\n      _type,\n      _key\n    },\n    _type,\n    _key\n  }\n}': GetWorkoutByIdQueryResult;

@@ -5,48 +5,23 @@ import { TextField } from "~/components/ui/text-field";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Exercise } from "~/lib/sanity/types";
-import { defineQuery } from "groq";
 import { client } from "~/lib/sanity/client";
 import { ExerciseCard } from "~/components/exercise-card";
-
-export const exerciseQuery = defineQuery(`*[_type == "exercise"] {
-  ...
-}`);
+import { useExercisesQuery } from "~/lib/react-query/hooks/exercise";
 
 export default function ExercisesTab() {
   const router = useRouter();
 
+  const { data: exercises, refetch, isRefetching } = useExercisesQuery();
+
   const [searchParams, setSearchParams] = React.useState("");
-  const [exercises, setExercises] = React.useState<Exercise[]>([]);
+
   const [filteredExercises, setFilteredExercises] = React.useState<Exercise[]>([]);
-
-  const [refreshing, startRefreshing] = React.useTransition();
-
-  React.useEffect(() => {
-    void fetchExercises();
-  }, []);
 
   React.useEffect(() => {
     const filtered = exercises.filter((exercise) => exercise.name?.toLowerCase().includes(searchParams.toLowerCase()));
     setFilteredExercises(filtered);
   }, [exercises, searchParams]);
-
-  async function fetchExercises() {
-    try {
-      const exercises = await client.fetch(exerciseQuery);
-
-      setExercises(exercises);
-      setFilteredExercises(exercises);
-    } catch (error) {
-      console.error("Error fetching exercises:", error);
-    }
-  }
-
-  async function handleRefresh() {
-    startRefreshing(async () => {
-      await fetchExercises();
-    });
-  }
 
   return (
     // TODO Fix this SafeAreaView issue on Android with Expo Router
@@ -88,8 +63,8 @@ export default function ExercisesTab() {
           )}
           refreshControl={
             <RefreshControl
-              refreshing={refreshing}
-              onRefresh={handleRefresh}
+              refreshing={isRefetching}
+              onRefresh={refetch}
               colors={["#3b82f6"]}
               tintColor="#3b82f6"
               title="Pull to refresh exercise"

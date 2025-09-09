@@ -16,7 +16,7 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { ExerciseSelectionModal } from "~/components/exercise-selection-modal";
 
-export default function IndexTab() {
+export default function ActiveExerciseTab() {
   const router = useRouter();
   const { minutes, seconds, reset } = useStopwatch({ autoStart: true });
 
