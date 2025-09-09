@@ -5,7 +5,7 @@ import React from "react";
 import { GetWorkoutsQueryResult } from "~/lib/sanity/types";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { useWorkoutDelete, useWorkoutsQuery } from "~/lib/react-query/hooks/workout";
+import { useWorkoutsQuery } from "~/lib/react-query/hooks/workout";
 import { formatWorkoutDuration } from "~/utils/wokrout";
 
 export default function HistoryTab() {
