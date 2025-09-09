@@ -1,4 +1,4 @@
-import { ActivityIndicator, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, FlatList, RefreshControl, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useUser } from "@clerk/clerk-expo";
 import React from "react";
@@ -13,7 +13,7 @@ export default function HistoryTab() {
 
   const router = useRouter();
 
-  const { data: workouts = [], isLoading, isRefetching, refetch } = useWorkoutsQuery(user?.id);
+  const { data: workouts, isLoading, isRefetching, refetch } = useWorkoutsQuery(user?.id);
 
   function formatDate(dateString: string) {
     const date = new Date(dateString);
@@ -67,9 +67,68 @@ export default function HistoryTab() {
       </View>
 
       {/*  Workout List  */}
-      <ScrollView
+      <FlatList
         className="flex-1"
-        contentContainerClassName="p-6"
+        data={workouts}
+        keyExtractor={(item) => item._id}
+        showsVerticalScrollIndicator={false}
+        contentContainerClassName="p-6 gap-4"
+        renderItem={({ item: workout }) => (
+          <TouchableOpacity
+            key={workout._id}
+            activeOpacity={0.7}
+            onPress={() => router.push({ pathname: "/history/[workoutId]", params: { workoutId: workout._id } })}
+            className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"
+          >
+            <View className="mb-4 flex-row items-center justify-between">
+              <View className="flex-1">
+                <Text className="text-lg font-semibold text-gray-900">{formatDate(workout.date ?? "")}</Text>
+                <View className="mt-1 flex-row items-center">
+                  <Ionicons name="time-outline" size={16} color="#6b7280" />
+                  <Text className="ml-2 text-gray-600">{formatWorkoutDuration(workout.duration)}</Text>
+                </View>
+              </View>
+              <View className="size-12 items-center justify-center rounded-full bg-blue-100">
+                <Ionicons name="fitness-outline" size={24} color="#3b82f6" />
+              </View>
+            </View>
+            {/*  Workout Stats  */}
+            <View className="mb-4 flex-row items-center justify-between">
+              <View className="flex-row items-center">
+                <View className="mr-3 rounded-lg bg-gray-100 px-3 py-2">
+                  <Text className="text-sm font-medium text-gray-700">{workout.exercises?.length ?? 0} exercises</Text>
+                </View>
+
+                <View className="mr-3 rounded-lg bg-gray-100 px-3 py-2">
+                  <Text className="text-sm font-medium text-gray-700">{getTotalSets(workout)} sets</Text>
+                </View>
+              </View>
+            </View>
+
+            {/*  Exercise list  */}
+            {workout.exercises?.length ? (
+              <View className="mb-4">
+                <Text className="mb-2 text-sm font-medium text-gray-700">Exercises:</Text>
+                <View className="flex-row flex-wrap">
+                  {getExerciseNames(workout)
+                    .slice(0, 3)
+                    .map((name, index) => (
+                      <View key={index} className="mr-2 rounded-lg bg-blue-50 px-3 py-1">
+                        <Text className="font-mediumr text-sm text-blue-700">{name}</Text>
+                      </View>
+                    ))}
+                  {getExerciseNames(workout).length > 3 ? (
+                    <View className="mr-2 rounded-lg bg-gray-100 px-3 py-1">
+                      <Text className="text-sm font-medium text-gray-600">
+                        +{getExerciseNames(workout).length - 3} more
+                      </Text>
+                    </View>
+                  ) : null}
+                </View>
+              </View>
+            ) : null}
+          </TouchableOpacity>
+        )}
         refreshControl={
           <RefreshControl
             refreshing={isRefetching}
@@ -80,76 +139,14 @@ export default function HistoryTab() {
             titleColor="#6b7280"
           />
         }
-      >
-        {!workouts.length ? (
+        ListEmptyComponent={
           <View className="items-center rounded-2xl bg-white p-8">
             <Ionicons name="barbell-outline" size={64} color="#9ca3af" />
             <Text className="mt-4 text-xl font-semibold text-gray-900">No workouts yet</Text>
             <Text className="mt-2 text-center text-gray-600">your completed workouts will appear here</Text>
           </View>
-        ) : (
-          <View className="gap-4">
-            {workouts.map((workout) => (
-              <TouchableOpacity
-                key={workout._id}
-                activeOpacity={0.7}
-                onPress={() => router.push({ pathname: "/history/[workoutId]", params: { workoutId: workout._id } })}
-                className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"
-              >
-                <View className="mb-4 flex-row items-center justify-between">
-                  <View className="flex-1">
-                    <Text className="text-lg font-semibold text-gray-900">{formatDate(workout.date ?? "")}</Text>
-                    <View className="mt-1 flex-row items-center">
-                      <Ionicons name="time-outline" size={16} color="#6b7280" />
-                      <Text className="ml-2 text-gray-600">{formatWorkoutDuration(workout.duration)}</Text>
-                    </View>
-                  </View>
-                  <View className="size-12 items-center justify-center rounded-full bg-blue-100">
-                    <Ionicons name="fitness-outline" size={24} color="#3b82f6" />
-                  </View>
-                </View>
-                {/*  Workout Stats  */}
-                <View className="mb-4 flex-row items-center justify-between">
-                  <View className="flex-row items-center">
-                    <View className="mr-3 rounded-lg bg-gray-100 px-3 py-2">
-                      <Text className="text-sm font-medium text-gray-700">
-                        {workout.exercises?.length ?? 0} exercises
-                      </Text>
-                    </View>
-
-                    <View className="mr-3 rounded-lg bg-gray-100 px-3 py-2">
-                      <Text className="text-sm font-medium text-gray-700">{getTotalSets(workout)} sets</Text>
-                    </View>
-                  </View>
-                </View>
-
-                {/*  Exercise list  */}
-                {workout.exercises?.length ? (
-                  <View className="mb-4">
-                    <Text className="mb-2 text-sm font-medium text-gray-700">Exercises:</Text>
-                    <View className="flex-row flex-wrap">
-                      {getExerciseNames(workout)
-                        .slice(0, 3)
-                        .map((name, index) => (
-                          <View key={index} className="mr-2 rounded-lg bg-blue-50 px-3 py-1">
-                            <Text className="font-mediumr text-sm text-blue-700">{name}</Text>
-                          </View>
-                        ))}
-                      {getExerciseNames(workout).length > 3 ? (
-                        <View className="mr-2 rounded-lg bg-gray-100 px-3 py-1">
-                          <Text className="text-sm font-medium text-gray-600">
-                            +{getExerciseNames(workout).length - 3} more
-                          </Text>
-                        </View>
-                      ) : null}
-                    </View>
-                  </View>
-                ) : null}
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-      </ScrollView>
+        }
+      />
     </SafeAreaView>
   );
 }

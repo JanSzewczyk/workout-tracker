@@ -5,7 +5,6 @@ import { TextField } from "~/components/ui/text-field";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Exercise } from "~/lib/sanity/types";
-import { client } from "~/lib/sanity/client";
 import { ExerciseCard } from "~/components/exercise-card";
 import { useExercisesQuery } from "~/lib/react-query/hooks/exercise";
 
@@ -15,7 +14,6 @@ export default function ExercisesTab() {
   const { data: exercises, refetch, isRefetching } = useExercisesQuery();
 
   const [searchParams, setSearchParams] = React.useState("");
-
   const [filteredExercises, setFilteredExercises] = React.useState<Exercise[]>([]);
 
   React.useEffect(() => {

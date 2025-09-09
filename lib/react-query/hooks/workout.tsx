@@ -28,7 +28,8 @@ export function useWorkoutsQuery(userId?: string) {
   return useQuery<GetWorkoutsQueryResult>({
     queryKey: ["workouts", userId],
     queryFn: async () => await client.fetch(getWorkoutsQuery, { userId }),
-    enabled: !!userId
+    enabled: !!userId,
+    initialData: []
   });
 }
 
