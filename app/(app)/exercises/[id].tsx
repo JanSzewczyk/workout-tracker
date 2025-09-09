@@ -3,37 +3,20 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { defineQuery } from "groq";
-import { client, urlFor } from "~/lib/sanity/client";
-import { Exercise } from "~/lib/sanity/types";
+import { urlFor } from "~/lib/sanity/client";
 import { clsx } from "clsx";
 import { getDifficultyColor, getDifficultyLabel } from "~/utils/exercise";
 import Markdown from "react-native-markdown-display";
-
-export const singleExerciseQuery = defineQuery(`*[_type == "exercise" && _id == $id][0]`);
+import { useExerciseByIdQuery } from "~/lib/react-query/hooks/exercise";
 
 export default function ExerciseDetailsView() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
 
-  const [exercise, setExercise] = React.useState<Exercise | null>(null);
-  const [loading, setLoading] = React.useState(true);
+  const { data: exercise, isLoading } = useExerciseByIdQuery(id);
+
   const [aiLoading, setAiLoading] = React.useState(false);
   const [aiGuidance, setAiGuidance] = React.useState<string>("");
-
-  React.useEffect(() => {
-    void fetchExercise();
-
-    async function fetchExercise() {
-      try {
-        const exercise = await client.fetch(singleExerciseQuery, { id });
-        setExercise(exercise);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching exercise:", error);
-      }
-    }
-  }, [id]);
 
   async function getAiGuidance() {
     setAiLoading(true);
@@ -60,7 +43,7 @@ export default function ExerciseDetailsView() {
     }
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <SafeAreaView className="flex-1 bg-white">
         <View className="flex-1 items-center justify-center">

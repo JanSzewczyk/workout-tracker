@@ -200,64 +200,6 @@ export type AllSanitySchemaTypes =
   | Slug
   | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
-// Source: ../app/(app)/(tabs)/exercises.tsx
-// Variable: exerciseQuery
-// Query: *[_type == "exercise"] {  ...}
-export type ExerciseQueryResult = Array<{
-  _id: string;
-  _type: "exercise";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  name?: string;
-  description?: string;
-  difficulty?: "advanced" | "beginner" | "intermediate";
-  image?: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-  };
-  videoUrl?: string;
-  isActive?: boolean;
-}>;
-
-// Source: ../app/(app)/exercises/[id].tsx
-// Variable: singleExerciseQuery
-// Query: *[_type == "exercise" && _id == $id][0]
-export type SingleExerciseQueryResult = {
-  _id: string;
-  _type: "exercise";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  name?: string;
-  description?: string;
-  difficulty?: "advanced" | "beginner" | "intermediate";
-  image?: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-  };
-  videoUrl?: string;
-  isActive?: boolean;
-} | null;
-
 // Source: ../lib/react-query/hooks/exercise.tsx
 // Variable: getExercisesQuery
 // Query: *[_type == "exercise"] {  ...}
@@ -286,6 +228,33 @@ export type GetExercisesQueryResult = Array<{
   videoUrl?: string;
   isActive?: boolean;
 }>;
+// Variable: getExerciseByIdQuery
+// Query: *[_type == "exercise" && _id == $id][0]
+export type GetExerciseByIdQueryResult = {
+  _id: string;
+  _type: "exercise";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  description?: string;
+  difficulty?: "advanced" | "beginner" | "intermediate";
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  videoUrl?: string;
+  isActive?: boolean;
+} | null;
 
 // Source: ../lib/react-query/hooks/workout.tsx
 // Variable: getWorkoutsQuery
@@ -337,8 +306,8 @@ export type GetWorkoutByIdQueryResult = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '*[_type == "exercise"] {\n  ...\n}': ExerciseQueryResult | GetExercisesQueryResult;
-    '*[_type == "exercise" && _id == $id][0]': SingleExerciseQueryResult;
+    '*[_type == "exercise"] {\n  ...\n}': GetExercisesQueryResult;
+    '*[_type == "exercise" && _id == $id][0]': GetExerciseByIdQueryResult;
     '*[_type == "workout" && userId == $userId] | order(date desc) {\n  _id,\n  date,\n  duration,\n  exercises[] {\n    exercise-> {\n      _id,\n      name\n    },\n    sets[] {\n      reps,\n      weight,\n      weightUnit,\n      _type,\n      _key\n    },\n    _type,\n    _key\n  }\n}': GetWorkoutsQueryResult;
     '*[_type == "workout" && _id == $workoutId][0] {\n  _id,\n  date,\n  duration,\n  exercises[] {\n    exercise-> {\n      _id,\n      name\n    },\n    sets[] {\n      reps,\n      weight,\n      weightUnit,\n      _type,\n      _key\n    },\n    _type,\n    _key\n  }\n}': GetWorkoutByIdQueryResult;
   }
