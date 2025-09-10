@@ -22,7 +22,8 @@ export default function AppLayout() {
           options={{
             presentation: "modal",
             gestureEnabled: true,
-            animationTypeForReplace: "push"
+            animationTypeForReplace: "push",
+            animation: "slide_from_bottom"
           }}
         />
       </Stack.Protected>

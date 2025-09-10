@@ -67,3 +67,31 @@ export function useWorkoutDelete() {
     mutationFn: async (workoutId: string) => await adminClient.delete(workoutId)
   });
 }
+
+export type WorkoutPayload = {
+  _type: string;
+  userId: string;
+  date: string;
+  duration: number;
+  exercises: Array<{
+    _type: string;
+    _key: string;
+    exercise: {
+      _type: string;
+      _ref: string;
+    };
+    sets: Array<{
+      _type: string;
+      _key: string;
+      reps: number;
+      weight: number;
+      weightUnit: "kg" | "lbs";
+    }>;
+  }>;
+};
+
+export function useCreateWorkout() {
+  return useMutation({
+    mutationFn: async (workout: WorkoutPayload) => await adminClient.create(workout)
+  });
+}

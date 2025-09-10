@@ -19,7 +19,7 @@ export const getExerciseByIdQuery = defineQuery(`*[_type == "exercise" && _id ==
 export function useExerciseByIdQuery(exerciseId?: string) {
   return useQuery<GetExerciseByIdQueryResult>({
     queryKey: ["exercise", exerciseId],
-    queryFn: async () => await client.fetch(getExerciseByIdQuery, { exerciseId }),
+    queryFn: async () => await client.fetch(getExerciseByIdQuery, { id: exerciseId }),
     enabled: !!exerciseId
   });
 }

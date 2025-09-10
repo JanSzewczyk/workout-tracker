@@ -70,7 +70,7 @@ export default function HistoryWorkoutScreen() {
   async function handleDeleteWorkout() {
     try {
       await deleteWorkout.mutateAsync(workoutId);
-      void queryClient.refetchQueries({ queryKey: ["workouts", user?.id], type: "active" });
+      void queryClient.refetchQueries({ queryKey: ["workouts", user?.id] });
       router.back();
     } catch (error) {
       console.error("Error during deleting workout:", error);
