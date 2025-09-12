@@ -24,7 +24,7 @@ export const getWorkoutsQuery = defineQuery(`*[_type == "workout" && userId == $
   }
 }`);
 
-export function useWorkoutsQuery(userId?: string) {
+export function useWorkoutsQuery(userId: string | undefined) {
   return useQuery<GetWorkoutsQueryResult>({
     queryKey: ["workouts", userId],
     queryFn: async () => await client.fetch(getWorkoutsQuery, { userId }),
