@@ -1,17 +1,15 @@
-import { Stack } from "expo-router";
+import { SplashScreen, Stack } from "expo-router";
 import { useAuth } from "@clerk/clerk-expo";
-import { ActivityIndicator, View } from "react-native";
+import * as React from "react";
 
 export default function AppLayout() {
   const { isSignedIn = false, isLoaded } = useAuth();
 
-  if (!isLoaded) {
-    return (
-      <View className="flex-1 items-center justify-center">
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
+  React.useEffect(() => {
+    if(isLoaded) {
+      SplashScreen.hideAsync()
+    }
+  } ,[isLoaded])
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
