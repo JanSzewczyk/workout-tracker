@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { AntDesign } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { Image } from "react-native";
 import { useUser } from "@clerk/clerk-expo";
 
@@ -13,7 +13,7 @@ export default function TabsLayout() {
         options={{
           title: "Home",
           headerShown: false,
-          tabBarIcon: ({ size, color }) => <AntDesign name="home" size={size} color={color} />
+          tabBarIcon: ({ size, color }) => <Ionicons name="home" size={size} color={color} />
         }}
       />
       <Tabs.Screen
@@ -21,7 +21,7 @@ export default function TabsLayout() {
         options={{
           title: "Exercises",
           headerShown: false,
-          tabBarIcon: ({ size, color }) => <AntDesign name="book" size={size} color={color} />
+          tabBarIcon: ({ size, color }) => <Ionicons name="book" size={size} color={color} />
         }}
       />
       <Tabs.Screen
@@ -29,7 +29,7 @@ export default function TabsLayout() {
         options={{
           title: "Workout",
           headerShown: false,
-          tabBarIcon: ({ size, color }) => <AntDesign name="pluscircle" size={size} color={color} />
+          tabBarIcon: ({ size, color }) => <Ionicons name="add-circle" size={size} color={color} />
         }}
       />
       <Tabs.Screen
@@ -46,7 +46,7 @@ export default function TabsLayout() {
         options={{
           title: "History",
           headerShown: false,
-          tabBarIcon: ({ size, color }) => <AntDesign name="clockcircleo" size={size} color={color} />
+          tabBarIcon: ({ size, color }) => <Ionicons name="time" size={size} color={color} />
         }}
       />
       <Tabs.Screen

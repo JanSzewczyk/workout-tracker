@@ -31,7 +31,7 @@ export default function HomeTab() {
   const averageDuration = totalWorkouts ? Math.round(totalDuration / totalWorkouts) : 0;
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView className="flex-1 bg-gray-50" edges={["right", "top", "left"]}>
       <ScrollView className="flex-1" refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}>
         {/*  Header  */}
         <View className="px-6 pb-6 pt-8">
