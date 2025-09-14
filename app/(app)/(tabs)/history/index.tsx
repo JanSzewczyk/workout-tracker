@@ -7,6 +7,7 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useWorkoutsQuery } from "~/lib/react-query/hooks/workout";
 import { formatWorkoutDuration } from "~/utils/wokrout";
+import { formatDate } from "~/utils/date";
 
 export default function HistoryTab() {
   const { user } = useUser();
@@ -14,21 +15,6 @@ export default function HistoryTab() {
   const router = useRouter();
 
   const { data: workouts, isLoading, isRefetching, refetch } = useWorkoutsQuery(user?.id);
-
-  function formatDate(dateString: string) {
-    const date = new Date(dateString);
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-
-    if (date.toDateString() === today.toDateString()) {
-      return "Today";
-    } else if (date.toDateString() === yesterday.toDateString()) {
-      return "Yesterday";
-    } else {
-      return date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
-    }
-  }
 
   function getTotalSets(workout: GetWorkoutsQueryResult[number]) {
     return (

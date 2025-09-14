@@ -55,10 +55,7 @@ export const useWorkoutStore = create<WorkoutStore>()(
     }),
     {
       name: "workout-store",
-      storage: createJSONStorage(() => AsyncStorage),
-      partialize: (state) => ({
-        weightUnit: state.weightUnit
-      })
+      storage: createJSONStorage(() => AsyncStorage)
     }
   )
 );
